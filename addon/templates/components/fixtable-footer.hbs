@@ -1,10 +1,10 @@
 <span>Página</span>
 <button type="button" class="btn btn-default" aria-label="Anterior" {{action 'goToPreviousPage'}} disabled={{equals currentPage 1}}>
-  <<
+  &#171;
 </button>
 {{input type="number" class="form-control" value=currentPage}}
 <button type="button" class="btn btn-default" aria-label="Siguiente" {{action 'goToNextPage'}} disabled={{equals currentPage totalPages}}>
-  >>
+  &#187;
 </button>
 <span>de {{totalPages}}</span>
 
