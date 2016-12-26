@@ -1,12 +1,16 @@
 <div class="pages-description">
 <span>Página</span>
-<a aria-label="Anterior" {{action 'goToPreviousPage'}} disabled={{equals currentPage 1}}>
+{{#unless (equals currentPage 1)}}
+<a aria-label="Anterior" {{action 'goToPreviousPage'}}>
   «
 </a>
+{{/unless}}
 {{currentPage}}
-<a aria-label="Siguiente" {{action 'goToNextPage'}} disabled={{equals currentPage totalPages}}>
+{{#unless (equals currentPage totalPages)}}
+<a aria-label="Siguiente" {{action 'goToNextPage'}}>
   »
 </a>
+{{/unless}}
 <span>de {{totalPages}}</span>
 </div>
 <span class="pull-right">
