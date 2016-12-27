@@ -12,7 +12,7 @@ export default Ember.Component.extend({
   layout: layout,
   fixtable: null,
   columnsByKey: null,
-  nullMessage: "No se encontraron coincidencias",
+  nullMessage: "No se encontraron registros",
 
   // paging
   clientPaging: false,
