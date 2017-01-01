@@ -66,31 +66,29 @@
         </tr>
       </thead>
       <tbody>
-        {{#unless isLoading}}
-          {{#each visibleContent as |row rowIndex|}}
-            <tr class={{if (get selectedRows (concat '' rowIndex)) 'active'}}>
-              {{#if rowSelection}}
-                <td>
-                  <div class="fixtable-checkbox">
-                    {{!-- we need concat here to convert rowIndex into a string for the get helper --}}
-                    {{input type="checkbox" checked=(mut (get selectedRows (concat '' rowIndex)))}}
-                  </div>
-                </td>
-              {{/if}}
-              {{#each columns as |column|}}
-                <td class={{column.cellClass}}>
-                  {{#if column.component}}
-                    {{!-- render the passed-in component --}}
-                    {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
-                  {{else}}
-                    {{!-- directly render the cell --}}
-                    {{get row column.key}}
-                  {{/if}}
-                </td>
-              {{/each}}
-            </tr>
-          {{/each}}
-        {{/unless}}
+        {{#each visibleContent as |row rowIndex|}}
+          <tr class={{if (get selectedRows (concat '' rowIndex)) 'active'}}>
+            {{#if rowSelection}}
+              <td>
+                <div class="fixtable-checkbox">
+                  {{!-- we need concat here to convert rowIndex into a string for the get helper --}}
+                  {{input type="checkbox" checked=(mut (get selectedRows (concat '' rowIndex)))}}
+                </div>
+              </td>
+            {{/if}}
+            {{#each columns as |column|}}
+              <td class={{column.cellClass}}>
+                {{#if column.component}}
+                  {{!-- render the passed-in component --}}
+                  {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                {{else}}
+                  {{!-- directly render the cell --}}
+                  {{get row column.key}}
+                {{/if}}
+              </td>
+            {{/each}}
+          </tr>
+        {{/each}}
       </tbody>
     </table>
     <div class="fixtable-centered">
