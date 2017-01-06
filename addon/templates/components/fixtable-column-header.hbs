@@ -3,9 +3,9 @@
     {{fixtable-column-label column=column}}
     {{#if (equals column.key sortBy)}}
       {{#if sortAscending}}
-        <span class="glyphicons glyphicons-chevron-up"></span>
+        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
       {{else}}
-        <span class="glyphicons glyphicons-chevron-down"></span>
+        <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
       {{/if}}
     {{/if}}
   </div>
