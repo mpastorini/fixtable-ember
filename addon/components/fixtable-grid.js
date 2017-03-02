@@ -2,9 +2,9 @@ import Ember from 'ember';
 import layout from '../templates/components/fixtable-grid';
 
 const checkboxColumnWidth = 40; // in pixels
-const possiblePageSizes = [ 25, 50, 100, 250, 500 ];
+const possiblePageSizes = [ 10, 15, 25, 50, 100 ];
 const defaultPage = 1;
-const defaultPageSize = 25;
+const defaultPageSize = 10;
 const toComparableString = x => x === null || typeof x === 'undefined' ? '' : x + '';
 const getCellData = (row, key) => row.get ? row.get(key) : row[key];
 
@@ -13,7 +13,7 @@ export default Ember.Component.extend({
   fixtable: null,
   columnsByKey: null,
   nullMessage: "No se encontraron registros",
-
+  classNames: ['fixtable-wrapper'],
   // paging
   clientPaging: false,
   serverPaging: false,
@@ -319,6 +319,9 @@ export default Ember.Component.extend({
   },
 
   actions: {
+    closeAllFilters(){
+
+    },
     goToPreviousPage() {
       this.safeSetCurrentPage(this.get('currentPage') - 1);
     },
