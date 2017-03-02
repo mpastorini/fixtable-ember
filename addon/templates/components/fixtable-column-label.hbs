@@ -1,5 +1,8 @@
 {{#if column.hideLabel}}
   &nbsp;
 {{else}}
-  {{if column.header column.header column.key}}
+	{{#if (eq column.key 'select_all')}}
+		{{checkbox-component selected=filter onChange=(action 'selectAll') class="filter_select_all"}}
+	{{/if}}
+	{{if column.header column.header ''}}
 {{/if}}
