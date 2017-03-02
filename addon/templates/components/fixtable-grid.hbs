@@ -1,15 +1,4 @@
 <div class={{if fixtableClass (concat 'fixtable ' fixtableClass) 'fixtable'}}>
-  <div class="fixtable-header"></div>
-  <div class="fixtable-filters">
-    {{#if showManualFilterButtons}}
-      {{#if filtersAreDirty}}
-        <button type="button" class="btn btn-primary" {{action 'applyManualFilter'}}>Apply</button>
-      {{/if}}
-      {{#if filtersAreActive}}
-        <button type="button" class="btn btn-primary" {{action 'clearManualFilter'}}>Clear</button>
-      {{/if}}
-    {{/if}}
-  </div>
   <div class="fixtable-inner">
     <table class={{if tableClass (concat 'table ' tableClass) 'table'}}>
       <thead>
@@ -22,51 +11,11 @@
             </th>
           {{/if}}
           {{#each columns as |column|}}
-            {{fixtable-column-header column=column sortBy=sortBy sortAscending=sortAscending sortColumn="sortColumn"}}
-          {{/each}}
-        </tr>
-        <tr class="fixtable-column-filters">
-          {{#if rowSelection}}
-            <th>
-              {{!-- empty cell in filter row to account for checkbox column --}}
-            </th>
-          {{/if}}
-          {{#each columns as |column|}}
-            <th>
-              {{#if column.filter}}
-                <div>
-                  <div class='form-group'>
-                    {{#if column.filter.component}}
-                      {{component column.filter.component columnDef=column filter=(mut (get filters column.key))}}
-                    {{else}}
-                      <div class='input-group'>
-                        {{#if (equals column.filter.type 'select')}}
-                          <select class="form-control" onchange={{action (mut (get filters column.key)) value="target.value"}}>
-                            <option value="">{{column.filter.placeholder}}</option>
-                            {{#each (getSelectOptions column content serverPaging) as |choice|}}
-                              <option value={{choice.value}} selected={{equals (get filters column.key) choice.value}}>
-                                {{if choice.label choice.label choice.value}}
-                              </option>
-                            {{/each}}
-                          </select>
-                        {{else}}
-                          {{input class='form-control' type='search' aria-label="Filter by column" placeholder=column.filter.placeholder
-                            value=(mut (get filters column.key))}}
-                          <span class="input-group-addon">
-                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                          </span>
-                        {{/if}}
-                      </div>
-                    {{/if}}
-                  </div>
-                </div>
-              {{/if}}
-            </th>
+            {{fixtable-column-header closeAllFilters=(action 'closeAllFilters') close=true applyManualFilter=(action 'applyManualFilter') filter=(mut (get filters column.key)) column=column sortBy=sortBy sortAscending=sortAscending sortColumn="sortColumn"}}
           {{/each}}
         </tr>
       </thead>
       <tbody>
-      {{#unless isLoading}}
       {{#each visibleContent as |row rowIndex|}}
           <tr class={{if (get selectedRows (concat '' rowIndex)) 'active'}}>
             {{#if rowSelection}}
@@ -78,35 +27,56 @@
               </td>
             {{/if}}
             {{#each columns as |column|}}
-              <td class={{column.cellClass}}>
+              <td class={{column.cellClass}} style="max-width:{{column.width}}px;">
                 {{#if column.component}}
                   {{!-- render the passed-in component --}}
-                  {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                  {{#if (and (not-eq column.key 'actions') (not-eq column.key 'select_all') (not-eq (get row column.key) '') (not-eq (get row column.key) null) (gt-str (get row column.key) column.maxLength))}}
+                    {{#tooltip-on-element side='top'}} 
+                      <div class="cell-content">
+                        {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                      </div>
+                    {{/tooltip-on-element}}
+                  {{/if}}
+                  <div class="cell-content">
+                    {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                  </div>
                 {{else}}
                   {{!-- directly render the cell --}}
-                  {{get row column.key}}
+                  {{#if (and (not-eq column.key 'actions') (not-eq column.key 'select_all') (not-eq (get row column.key) '') (not-eq (get row column.key) null) (gt-str (get row column.key) column.maxLength))}}
+                    {{#tooltip-on-element side='top'}} 
+                      <div class="cell-content">
+                        {{get row column.key}}
+                      </div>
+                    {{/tooltip-on-element}}
+                  {{/if}}
+                  <div class="cell-content">
+                    {{get row column.key}}
+                  </div>
                 {{/if}}
               </td>
             {{/each}}
           </tr>
         {{/each}}
-      {{/unless}}
       </tbody>
     </table>
-    <div class="fixtable-centered">
       {{#if isLoading}}
-        <i class="fa fa-refresh fa-spin fa-4x fa-fw" aria-hidden="true"></i>
-        <span class="sr-only">Cargando...</span>
+        <div class="fixtable-centered dark-overlay">
+          <i class="fa fa-spin fa-4x fa-fw" aria-hidden="true">
+            <img src="/assets/images/ceop-logo-spin.png">
+          </i>
+          <span class="sr-only">Cargando...</span>
+        </div>
       {{else}}
         {{#unless visibleContent.length}}
+          <div class="fixtable-centered">
             <h4>{{nullMessage}}</h4>
+          </div>
         {{/unless}}
       {{/if}}
-    </div>
   </div>
-  {{#if (and showPaging visibleContent.length)}}
-    {{fixtable-footer
-      currentPage=currentPage totalPages=totalPages pageSize=pageSize pageSizeOptions=pageSizeOptions
-      goToNextPage="goToNextPage" goToPreviousPage="goToPreviousPage"}}
-  {{/if}}
 </div>
+{{#if (and showPaging visibleContent.length)}}
+  {{fixtable-footer
+    currentPage=currentPage totalPages=totalPages pageSize=pageSize pageSizeOptions=pageSizeOptions
+    goToNextPage="goToNextPage" goToPreviousPage="goToPreviousPage"}}
+{{/if}}
