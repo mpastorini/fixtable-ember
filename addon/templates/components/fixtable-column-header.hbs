@@ -1,3 +1,10 @@
+{{#unless (or (eq column.key 'select_all') (eq column.key 'actions'))}}
+  {{#if filter}}
+    <i class="fa fa-filter filtering" {{action 'toggleFilter'}}></i>
+  {{else}}
+    <i class="fa fa-filter" {{action 'toggleFilter'}}></i>
+  {{/if}}
+{{/unless}}
 {{#if column.sortable}}
   <div class="clickable" {{action 'sortColumn' column.key}}>
     {{fixtable-column-label column=column}}
@@ -11,6 +18,9 @@
   </div>
 {{else}}
   <div>
-    {{fixtable-column-label column=column}}
+    {{fixtable-column-label column=column filter=filter applyManualFilter=applyManualFilter}}
   </div>
+{{/if}}
+{{#if filterActive}}
+  {{popup-filter applyManualFilter=applyManualFilter filter=filter filterActive=filterActive column=column}}
 {{/if}}
