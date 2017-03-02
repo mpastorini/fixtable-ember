@@ -1,23 +1,24 @@
 <div class="pages-description">
-<span>Página</span>
-<div class="table-pager">
-  <a aria-label="Anterior" {{action 'goToPreviousPage'}} disabled={{equals currentPage 1}}>
-    «
-  </a>
-  {{currentPage}}
-  <a aria-label="Siguiente" {{action 'goToNextPage'}} disabled={{equals currentPage totalPages}}>
-    »
-  </a>
+  <span>PÁGINA</span>
+  <div class="table-pager">
+    <a aria-label="Anterior" {{action 'goToPreviousPage'}} disabled={{equals currentPage 1}}>
+      «
+    </a>
+    {{currentPage}}
+    <a aria-label="Siguiente" {{action 'goToNextPage'}} disabled={{equals currentPage totalPages}}>
+      »
+    </a>
+  </div>
+  <span>DE {{totalPages}}</span>
 </div>
-<span>de {{totalPages}}</span>
-</div>
-<span class="pull-right">
+
+<span>
   <select class="form-control" onchange={{action (mut pageSize) value="target.value"}}>
     {{#each pageSizeOptions as |choice|}}
       <option value={{choice}} selected={{equals pageSize choice}}>{{choice}}</option>
     {{/each}}
   </select>
   <span>
-    items por página
+    ITEMS POR PÁGINA
   </span>
 </span>
