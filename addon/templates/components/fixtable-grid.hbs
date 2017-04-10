@@ -1,52 +1,132 @@
-{{#if isLoading}}
-	<div class="loader icon-fixed with-header">
-		<i class="fa fa-spin fa-4x fa-fw" aria-hidden="true">
-	    <img src="/assets/images/ceop-logo-spin.png">
-	  </i>
+<div class={{if fixtableClass (concat 'fixtable ' fixtableClass) 'fixtable'}}>
+  {{!-- <div class="fixtable-header"></div> --}}
+{{!--   <div class="fixtable-filters">
+    {{#if showManualFilterButtons}}
+      {{#if filtersAreDirty}}
+        <button type="button" class="btn btn-primary" {{action 'applyManualFilter'}}>Apply</button>
+      {{/if}}
+      {{#if filtersAreActive}}
+        <button type="button" class="btn btn-primary" {{action 'clearManualFilter'}}>Clear</button>
+      {{/if}}
+    {{/if}}
+  </div> --}}
+  <div class="fixtable-inner">
+    <table class={{if tableClass (concat 'table ' tableClass) 'table'}}>
+      <thead>
+        <tr class="fixtable-column-headers">
+          {{#if rowSelection}}
+            <th>
+              <div class="fixtable-checkbox">
+                {{input type="checkbox" checked=selectAllToggle}}
+              </div>
+            </th>
+          {{/if}}
+          {{#each columns as |column|}}
+            {{fixtable-column-header closeAllFilters=(action 'closeAllFilters') closeAll=closeAll applyManualFilter=(action 'applyManualFilter') filter=(mut (get filters column.key)) column=column sortBy=sortBy sortAscending=sortAscending sortColumn="sortColumn"}}
+          {{/each}}
+        </tr>
+{{!--        <tr class="fixtable-column-filters">
+           {{#if rowSelection}}
+            <th>
+              empty cell in filter row to account for checkbox column
+            </th>
+          {{/if}} --}}
+          {{!-- {{#each columns as |column|}}
+            <th>
+              {{#if column.filter}}
+                <div>
+                  <div class='form-group'>
+                    {{#if column.filter.component}}
+                      {{component column.filter.component columnDef=column filter=(mut (get filters column.key))}}
+                    {{else}}
+                      <div class='input-group'>
+                        {{#if (equals column.filter.type 'select')}}
+                          <select class="form-control" onchange={{action (mut (get filters column.key)) value="target.value"}}>
+                            <option value="">{{column.filter.placeholder}}</option>
+                            {{#each (getSelectOptions column content serverPaging) as |choice|}}
+                              <option value={{choice.value}} selected={{equals (get filters column.key) choice.value}}>
+                                {{if choice.label choice.label choice.value}}
+                              </option>
+                            {{/each}}
+                          </select>
+                        {{else}}
+                          {{input class='form-control' type='search' aria-label="Filter by column" placeholder=column.filter.placeholder
+                            value=(mut (get filters column.key))}}
+                          <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                          </span>
+                        {{/if}}
+                      </div>
+                    {{/if}}
+                  </div>
+                </div>
+              {{/if}}
+            </th>
+          {{/each}}
+        </tr>--}}
+      </thead>
+      <tbody>
+      {{#each visibleContent as |row rowIndex|}}
+          <tr class={{if (get selectedRows (concat '' rowIndex)) 'active'}}>
+            {{#if rowSelection}}
+              <td>
+                <div class="fixtable-checkbox">
+                  {{!-- we need concat here to convert rowIndex into a string for the get helper --}}
+                  {{input type="checkbox" checked=(mut (get selectedRows (concat '' rowIndex)))}}
+                </div>
+              </td>
+            {{/if}}
+            {{#each columns as |column|}}
+              <td class={{column.cellClass}} style="max-width:{{column.width}}px;">
+                {{#if column.component}}
+                  {{!-- render the passed-in component --}}
+                  {{#if (and (not-eq column.key 'actions') (not-eq column.key 'select_all') (not-eq (get row column.key) '') (not-eq (get row column.key) null) (gt-str (get row column.key) column.maxLength))}}
+                    {{#tooltip-on-element side='top'}} 
+                      <div class="cell-content">
+                        {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                      </div>
+                    {{/tooltip-on-element}}
+                  {{/if}}
+                  <div class="cell-content">
+                    {{component column.component dataRow=row columnDef=column bubbleAction=(action sendAction)}}
+                  </div>
+                {{else}}
+                  {{!-- directly render the cell --}}
+                  {{#if (and (not-eq column.key 'actions') (not-eq column.key 'select_all') (not-eq (get row column.key) '') (not-eq (get row column.key) null) (gt-str (get row column.key) column.maxLength))}}
+                    {{#tooltip-on-element side='top'}} 
+                      <div class="cell-content">
+                        {{get row column.key}}
+                      </div>
+                    {{/tooltip-on-element}}
+                  {{/if}}
+                  <div class="cell-content">
+                    {{get row column.key}}
+                  </div>
+                {{/if}}
+              </td>
+            {{/each}}
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+      {{#if isLoading}}
+        <div class="fixtable-centered dark-overlay">
+          <i class="fa fa-spin fa-4x fa-fw" aria-hidden="true">
+            <img src="/assets/images/ceop-logo-spin.png">
+          </i>
+          <span class="sr-only">Cargando...</span>
+        </div>
+      {{else}}
+        {{#unless visibleContent.length}}
+          <div class="fixtable-centered">
+            <h4>{{nullMessage}}</h4>
+          </div>
+        {{/unless}}
+      {{/if}}
   </div>
-{{else}}
-	{{#if isExporting}}
-		<div class="loader icon-fixed with-header">
-			<i class="fa fa-spin fa-4x fa-fw" aria-hidden="true">
-		    <img src="/assets/images/ceop-logo-spin.png">
-		  </i>
-	  </div>
-  {{/if}}
-	<div class="buttons-wrapper">
-  	{{!-- {{elements/button-component theme="light" text="Aplicar filtros" iconClass="fa fa-filter" action=(action 'applyFilters')}} --}}
-  	{{elements/button-component theme="light" text="Exportar a PDF" class="visible-full-desktop" iconClass="fa fa-file-pdf-o" action=(action 'exportToPDF')}}
-	</div>
-	{{#each rows as |row i0|}}
-		<div class="print-row">
-			{{#if row.title}}
-				<div class="row">
-					<h3>{{row.title}}</h3>
-				</div>
-			{{/if}}
-			<div class="row text-center">
-			{{#each row.columns as |column i1|}}
-				<div class="col-md-{{column.size}} sizeable-column" style="border: 8px solid transparent">
-					<div class="row nested text-center">
-					{{#if column.title}}
-						{{#if (and column.titleType (eq column.titleType 'highlight'))}}
-							<h3 class="highlighted">{{column.title}}</h3>
-						{{else}}
-							<h3>{{column.title}}</h3>
-						{{/if}}
-					{{/if}}
-					{{#each column.columns as |colrow i2|}}
-						<div class="col-md-{{colrow.size}} sizeable-column" style="border: 8px solid transparent">
-							{{component colrow.component data=colrow.data i0=i0 i1=i1 i2=i2 action=(action 'applyFilters')}}
-						</div>
-					{{else}}
-						{{#if column.component}}
-							{{component column.component data=column.data i0=i0 i1=i1 action=(action 'applyFilters')}}
-						{{/if}}
-					{{/each}}
-					</div>
-				</div>
-			{{/each}}
-			</div>
-		</div>
-	{{/each}}
+</div>
+{{#if (and showPaging visibleContent.length)}}
+  {{fixtable-footer
+    currentPage=currentPage totalPages=totalPages pageSize=pageSize pageSizeOptions=pageSizeOptions
+    goToNextPage="goToNextPage" goToPreviousPage="goToPreviousPage"}}
 {{/if}}
