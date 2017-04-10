@@ -19,7 +19,7 @@ export default Ember.Component.extend({
   serverPaging: false,
   showPaging: Ember.computed.or('clientPaging', 'serverPaging'),
   totalRowsOnServer: 0, // only used for server paging
-
+  headerActions: [],
   // filters
   filters: null,
   filterToApply: null,
@@ -320,7 +320,6 @@ export default Ember.Component.extend({
 
   actions: {
     closeAllFilters(){
-
     },
     goToPreviousPage() {
       this.safeSetCurrentPage(this.get('currentPage') - 1);
@@ -407,6 +406,12 @@ export default Ember.Component.extend({
   didRender() {
     // force the Fixtable to resize itself when rendered
     this._super(...arguments);
+    let self = this;
+    // console.log(this.get('columns').length);
+    this.get('columns').forEach(column => {
+      self.get('headerActions');
+    });
+    // console.log(this.get('headerActions'));
     let fixtable = this.get('fixtable');
     if (fixtable) {
       fixtable.setDimensions();
