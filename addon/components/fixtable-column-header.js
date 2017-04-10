@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import layout from '../templates/components/fixtable-column-header';
+import InboundActions from 'ember-component-inbound-actions/inbound-actions';
 
-export default Ember.Component.extend({
+export default Ember.Component.extend(InboundActions, {
   layout,
   tagName: 'th',
   column: null,
@@ -21,7 +22,18 @@ export default Ember.Component.extend({
     },
     toggleFilter(){
       this.attrs.closeAllFilters();
-      this.toggleProperty('filterActive');
+      console.log('abriendo: ' + this.get('column.header'));
+      this.set('closeAll', true);
+      let self = this;
+      setTimeout(function(){
+        self.set('closeAll', false);
+        self.set('filterActive', true);
+      }, 10);
+    },
+    closeFilter(){
+      // this.attrs.closeAllFilters();
+      console.log('cerrando: ' + this.get('column.header'));
+      this.set('filterActive', false);
     },
     selectAll() {
       this.set('filter', true);
