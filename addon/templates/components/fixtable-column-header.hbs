@@ -1,4 +1,4 @@
-{{#unless (or (eq column.key 'select_all') (eq column.key 'actions'))}}
+{{#unless (or (or (eq column.key 'select_all') (eq column.key 'actions')) (eq column.key 'segments'))}}
   {{#if filter}}
     <i class="fa fa-filter filtering" {{action 'toggleFilter'}}></i>
   {{else}}
