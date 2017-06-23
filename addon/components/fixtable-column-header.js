@@ -42,5 +42,6 @@ export default Ember.Component.extend(InboundActions, {
   didInsertElement(){
     this._super(...arguments);
     this.$().css('min-width', this.get('column.width'));
+    this.$().css('width', this.get('column.width'));
   }
 });
