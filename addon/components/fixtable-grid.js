@@ -397,8 +397,9 @@ export default Ember.Component.extend({
         fixtable.setColumnWidth(index + indexOffset, col.width);
       }
     });
-
-    fixtable.setDimensions();
+    if(!this.get('preventDimension')){
+      fixtable.setDimensions();
+    }
     this.set('fixtable', fixtable);
     this.notifyReloadContent();
   },
@@ -414,7 +415,9 @@ export default Ember.Component.extend({
     // console.log(this.get('headerActions'));
     let fixtable = this.get('fixtable');
     if (fixtable) {
-      fixtable.setDimensions();
+      if(!this.get('preventDimension')){
+        fixtable.setDimensions();
+      }
     }
   }
 });
