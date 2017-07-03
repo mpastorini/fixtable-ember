@@ -1,9 +1,11 @@
 {{#unless (or (or (eq column.key 'select_all') (eq column.key 'actions')) (eq column.key 'segments'))}}
-  {{#if filter}}
-    <i class="fa fa-filter filtering" {{action 'toggleFilter'}}></i>
-  {{else}}
-    <i class="fa fa-filter" {{action 'toggleFilter'}}></i>
-  {{/if}}
+  {{#unless column.preventFilter}}
+    {{#if filter}}
+      <i class="fa fa-filter filtering" {{action 'toggleFilter'}}></i>
+    {{else}}
+      <i class="fa fa-filter" {{action 'toggleFilter'}}></i>
+    {{/if}}
+  {{/unless}}
 {{/unless}}
 {{#if column.sortable}}
   <div class="clickable" {{action 'sortColumn' column.key}}>
